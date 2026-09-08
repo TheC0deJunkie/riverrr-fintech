@@ -1,65 +1,78 @@
 # Riverrr
 
-A credit-builder fintech for South Africa: a wallet and card, a plan that reports contributions
-so a member builds a credit history, and a set of community finance tools around it.
+**A product design project.** A credit-builder concept for South Africa, designed and built as a
+working front end. Not a licensed credit provider, not taking real money, and not a live financial
+product — NCR registration pending.
 
-The premise is narrow. Plenty of people here have income and no credit record, which means no
-record to lend against. A credit-builder plan turns a small monthly contribution into reported
-repayment behaviour, and the wallet and card exist so the money has somewhere to sit while that
-happens.
+![Riverrr](docs/01-hero.jpg)
 
-No longer actively maintained. The repo is kept as a reference build.
+## The problem it's designed around
 
-![screenshot](docs/screenshot.jpg)
+Plenty of people here have income and no credit record. No record means no Wi-Fi contract, no phone
+upgrade, no car finance, and a store account that keeps saying no. The usual answer is to borrow
+badly and hope it counts.
 
-## What's in it
+Riverrr models the other route: a small monthly commitment that gets reported to the bureau as
+twelve clean months, with the money handed back at the end. The design question the whole thing is
+built to answer is whether you can make that legible enough that someone actually finishes twelve
+months.
 
-**Marketing site** — the public pages, on the same Next.js app as the product.
+## The design
 
-**Authed product**
-- Sign-in, open-account and card activation flows.
-- Dashboard: cards, transactions, statements, send money, PayShap, airtime, and the
-  credit-builder balance.
-- Wallet with card top-up, and PDF statement export.
+**Twelve stamps, one map.** Progress is a journey with twelve nodes, not a percentage bar. Each
+node is a concrete move with what it costs and why it works — first stamp at the bureau, Wi-Fi at
+month 3, phone contract at month 6, score band crossing at month 9, money back at month 12. You can
+see where you are and what the next move buys you.
 
-**App vault** — smaller finance tools inside the same shell, so a member does not leave the app
-to reach them:
-- **Better Stash / Stokvel** — group savings with locked returns and multi-person approval,
-  modelled on how stokvels actually run rather than on a generic savings pot.
-- **Better Cover / Funerals** — a funeral cover marketplace.
-- **Better Merchants** — merchant payments: tap to pay, PayShap and QR.
-- **Kasi4Hire, KasiShows** — local hire and events listings.
+**Three tiers, same commitment.** Spark, Elevate and Royalty all commit the same amount over twelve
+months and differ in what unlocks — Elevate adds a coach that gives one Win, one Tip and one Watch
+a month; Royalty matches against external credit by income. Keeping the commitment identical across
+tiers was deliberate: the tier should change the guidance, never the debt.
 
-**Bureau integration** — `src/lib/bureau` wraps the credit bureau behind an interface with a
-ClearScore implementation and a mock. The mock is the default in development, so nobody needs live
-bureau credentials to work on the dashboard.
+**An itemised slip, every month.** The costliest design decision. Most credit products hide what
+they charge, so this one prints a receipt: how much of the payment is the member's own savings, how
+much is the fee, what twelve months costs in total, and what comes back at the end. If the true
+cost is small, showing it plainly is the strongest thing you can say.
 
-## Architecture
+**A comparison people actually make.** The pricing is explained against what the same money buys on
+a Friday, not against a competitor's rate card. That framing came out of asking who this is for.
 
-```
-src/app/            Next.js App Router: /, /signin, /open-account, /activate,
-                    /dashboard, /wallet, and /api for auth, credit, activation, paystack
-src/components/     apps/ (the vault), dashboard/, auth/, bb/ (design primitives)
-src/lib/            auth/, db/ (Drizzle), bureau/, paystack/
-```
+**The tools.** Smaller products sharing one KYC and one login — funeral cover with a claim payout
+window, a verified-tradesmen marketplace paid on completion, and group savings with a two-of-three
+approval rule and a shared ledger.
 
-Auth is written by hand rather than delegated to a provider. For a product that touches money and
-identity, I would rather own the session model and know exactly what is in the cookie.
+**In the pocket.** Physics-based motion rather than slides, progressive disclosure, and a state
+change when a milestone lands.
 
-## Stack
+## Build
 
 | | |
 | --- | --- |
 | Framework | Next.js 16, React 19, TypeScript |
 | Styling | Tailwind CSS 4 |
 | Database | Neon Postgres (serverless driver) + Drizzle ORM |
-| Auth | Neon Auth, with hand-rolled session handling |
-| Payments | Paystack |
-| PDF | jsPDF for statements |
+| Auth | Hand-rolled sessions rather than a provider |
+| Payments | Paystack, in test mode |
+| Bureau | An interface with a ClearScore implementation and a mock; the mock is the default |
+
+Auth is written by hand. For anything touching money and identity I'd rather own the session model
+and know exactly what's in the cookie than inherit someone else's.
+
+The bureau integration sits behind an interface with a mock as the default, so the whole product is
+workable without live bureau credentials — which also means nothing in this repo has ever talked to
+a real credit bureau.
+
+## An earlier build
+
+The same idea, taken through a different shape first: a wallet and card, transactions, statements,
+PayShap, airtime, and an app vault of finance tools in one shell.
+
+![An earlier build](docs/02-earlier-build.jpg)
 
 ## Status
 
-Archived. Nothing here is a live financial product, and none of it is regulated advice.
+A design and front-end project. Nothing here is a licensed financial product, no real money moves
+through it, and none of it is financial advice. NCR registration pending.
 
 ---
 
